@@ -15,7 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv()
 
 # Quick-start development settings - unsuitable for production
@@ -31,7 +31,6 @@ DEBUG = os.getenv("DEBUG")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third Party
     "rest_framework",
+    "django_ckeditor_5",
     # Local Apps
     "accounts",
     "products",
@@ -52,6 +52,32 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = "accounts.User"
 
+CKEDITOR_5_CONFIGS = {
+    "awesome_ckeditor": {
+        "toolbar": [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "underline",
+            "|",
+            "fontColor",
+            "fontBackgroundColor",
+            "|",
+            "link",
+            "|",
+            "undo",
+            "redo",
+        ],
+        "fontColor": {
+            "colors": [
+                {"color": "hsl(0, 75%, 60%)", "label": "Red"},
+                {"color": "hsl(120, 75%, 60%)", "label": "Green"},
+                {"color": "hsl(240, 75%, 60%)", "label": "Blue"},
+            ]
+        },
+    }
+}
 
 
 MIDDLEWARE = [
