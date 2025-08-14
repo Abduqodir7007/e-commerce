@@ -9,7 +9,13 @@ from mptt.models import MPTTModel, TreeForeignKey
 class Category(MPTTModel):
     name = models.CharField(max_length=255)
     image = models.ForeignKey(Media, on_delete=models.SET_NULL, null=True, blank=True)
-    parent = TreeForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="children")
+    parent = TreeForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="children",
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -25,14 +31,13 @@ class Product(models.Model):
     short_desciption = models.TextField()
     description = models.TextField()
     quantity = models.IntegerField()
-    instruction = CKEditor5Field("Text", config_name="awesome_ckeditor")
     in_stock = models.BooleanField(default=False)
+    instruction = CKEditor5Field("Text", config_name="awesome_ckeditor")
     image = models.ForeignKey(Media, on_delete=models.CASCADE)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         related_name="products",
-        default=None,
     )
 
 
