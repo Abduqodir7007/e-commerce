@@ -13,6 +13,9 @@ class Media(models.Model):
     def __str__(self) -> str:
         return self.id
 
+    class Meta:
+        verbose_name_plural = "Media Files"
+
 
 class Settings(models.Model):
     image = models.ForeignKey(Media, on_delete=models.SET_NULL, null=True, blank=True)
@@ -20,7 +23,10 @@ class Settings(models.Model):
     subtitle = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return self.id
+        return str(self.id)
+
+    class Meta:
+        verbose_name_plural = "Settings"
 
 
 class Country(models.Model):
@@ -28,6 +34,9 @@ class Country(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = "Countries"
 
 
 class Region(models.Model):
@@ -49,6 +58,9 @@ class InstagramStory(models.Model):
     def __str__(self):
         return f"{self.id}"
 
+    class Meta:
+        verbose_name_plural = "Instagram Stories"
+
 
 class CustomerFeedback(models.Model):
     full_name = models.CharField(max_length=255)
@@ -59,3 +71,7 @@ class CustomerFeedback(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+    class Meta:
+        verbose_name = "Customer Feedback"
+        verbose_name_plural = "Customer Feedbacks"

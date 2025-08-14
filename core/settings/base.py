@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Third Party
     "rest_framework",
     "django_ckeditor_5",
+    "mptt",
     # Local Apps
     "accounts",
     "products",
@@ -55,19 +56,20 @@ AUTH_USER_MODEL = "accounts.User"
 CKEDITOR_5_CONFIGS = {
     "awesome_ckeditor": {
         "toolbar": [
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "underline",
-            "|",
-            "fontColor",
-            "fontBackgroundColor",
-            "|",
-            "link",
-            "|",
-            "undo",
-            "redo",
+            "full"
+            # "heading",
+            # "|",
+            # "bold",
+            # "italic",
+            # "underline",
+            # "|",
+            # "fontColor",
+            # "fontBackgroundColor",
+            # "|",
+            # "link",
+            # "|",
+            # "undo",
+            # "redo",
         ],
         "fontColor": {
             "colors": [

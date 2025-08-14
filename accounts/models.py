@@ -34,34 +34,42 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
+
 
 EXPIRATION_TIME = 2
+
+
 class VerificationOtp(models.Model):
-    REGISTER_TYPE = (
-        ('register', 'register'),
-        ('password_reset', 'password')
-    )
+    REGISTER_TYPE = (("register", "register"), ("password_reset", "password"))
     user = models.ForeignKey(
         "accounts.User", on_delete=models.CASCADE, related_name="codes"
     )
     code = models.IntegerField()
-    type = models.CharField(choices=REGISTER_TYPE,)
+    type = models.CharField(
+        choices=REGISTER_TYPE,
+    )
     expiration_time = models.DateTimeField()
-    
+
     def __str__(self):
-        return f'{self.user.email}'
+        return f"{self.user.email}"
+
+    class Meta:
+        verbose_name = "Verification Otp"
+        verbose_name_plural = "Verification Otps"
+
 
 class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
     name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     apartment = models.CharField(max_length=255)
     street = models.TextField()
     pin_code = models.CharField(max_length=255)
     # city
-    
+
     def __str__(self):
-        return f'{self.user} {self.name}'
-    
-    
+        return f"{self.user} {self.name}"
+
+    class Meta:
+        verbose_name = "Address"
+        verbose_name_plural = "Addresses"
