@@ -4,6 +4,12 @@ from django_ckeditor_5.fields import CKEditor5Field
 from common.models import Media
 from accounts.models import User
 from mptt.models import MPTTModel, TreeForeignKey
+from rest_framework.exceptions import ValidationError
+
+
+def discount_validator(x):
+    if x > 100:
+        raise ValidationError({"msg": "too high"})
 
 
 class Category(MPTTModel):
@@ -33,7 +39,20 @@ class Product(models.Model):
     quantity = models.IntegerField()
     in_stock = models.BooleanField(default=False)
     instruction = CKEditor5Field("Text", config_name="awesome_ckeditor")
-    image = models.ForeignKey(Media, on_delete=models.CASCADE)
+    # image = models.ForeignKey(Media, on_delete=models.CASCADE)
+    discount = models.IntegerField(
+        help_text="discount in percentage",
+        validators=[discount_validator],
+        null=True,
+        blank=True,
+    )
+    thumbnail = models.ForeignKey(
+        Media,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="thumbnail",
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,

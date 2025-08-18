@@ -31,7 +31,7 @@ DEBUG = os.getenv("DEBUG")
 
 # ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost, 127.0.0.1").split(",")
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
-
+HOST = os.getenv("HOST")
 # Application definition
 
 INSTALLED_APPS = [
@@ -90,7 +90,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # EMAIL_HOST = "smtp.google.com"  # Use 'smtp-mail.outlook.com' if needed
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
-# EMAIL_HOST_PASSWORD = "bghcqyvuvrvwhsar"
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # SERVER_EMAIL = EMAIL_HOST_USER
 
 REST_FRAMEWORK = {
@@ -182,8 +182,9 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
+
 MEDIA_URL = "/media/"
-# MEDIA_URL = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

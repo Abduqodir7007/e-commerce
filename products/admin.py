@@ -13,9 +13,15 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ("category",)
 
 
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+class CategoryAdmin(MPTTModelAdmin):
+    list_display = ("id", "name",    "parent")
     search_fields = ("name",)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "parent":
+            kwargs["queryset"] = Category.objects.filter(parent=None).all()
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class ProductColorAdmin(admin.ModelAdmin):
@@ -32,7 +38,7 @@ class ProductSizeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Category, MPTTModelAdmin, list_display=("name", "parent"))
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(ProductColor, ProductColorAdmin)
 admin.site.register(ProductReview, ProductReviewAdmin)
 admin.site.register(ProductSize, ProductSizeAdmin)

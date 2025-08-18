@@ -28,7 +28,9 @@ class Discount(models.Model):
     strart_date = models.DateTimeField()
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
-    products = models.ForeignKey(Product, on_delete=models.CASCADE)
+    products = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="discounts"
+    )
 
     def __str__(self):
         return self.code
