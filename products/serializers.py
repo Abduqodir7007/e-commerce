@@ -11,14 +11,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     thumbnail = MediaSerializer(read_only=True)
+    
     class Meta:
         model = Product
         fields = (
             "brand",
             "name",
             "price",
-            "image",
             "category",
-            "is_stock",
+            "in_stock",
             "thumbnail",
         )
