@@ -102,3 +102,4 @@ class LoginSerializer(TokenObtainPairSerializer):
         self.auth_validate(data)
         data = super().validate(data)
         return data
+

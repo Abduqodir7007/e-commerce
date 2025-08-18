@@ -1,5 +1,4 @@
 from .utils import send_email
-from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from .serializers import *
@@ -96,8 +95,34 @@ class ResetPassword(APIView):
 
 class ResetPasswordFinish(UpdateAPIView):
     serializer_class = ResetPasswordFinishSer
-    
+
     def get_object(self):
         return self.request.user
-    
-    
+
+
+class GetNewCodeView(APIView):
+    authentication_class = [
+        IsAuthenticated,
+    ]
+
+    def post(self, request):
+        user = request.user
+        verify_type = request.data.get("type")
+        self.check_code_exists(user, verify_type)
+        code = user.create_code()
+
+        send_email(code, user)
+
+        return Response({"msg": "New code sent"})
+
+    @staticmethod
+    def check_code_exists(user, verify_type):
+        code = user.codes.filter(
+            user=user,
+            expiration_time__gte=datetime.now(),
+            is_confirmed=False,
+        )
+
+        code.update(type=verify_type)
+        if code.exists():
+            raise ValidationError({"msg": "You have valid code!"})

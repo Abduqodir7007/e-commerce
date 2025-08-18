@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import datetime, timedelta
 
-EXPIRATION_TIME = 5
+EXPIRATION_TIME = 1
 
 
 class CustomManager(UserManager):
