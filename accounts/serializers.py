@@ -78,6 +78,11 @@ class ResetPasswordFinishSer(serializers.Serializer):
 
         return data
 
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data.get("password", instance.password))
+        instance.save()
+        return instance
+
 
 class LoginSerializer(TokenObtainPairSerializer):
     email = serializers.EmailField(required=True, write_only=True)
@@ -90,10 +95,10 @@ class LoginSerializer(TokenObtainPairSerializer):
             self.user = user
         else:
             raise ValidationError({"msg": "Invalid Credentials"})
-        
+
         return user
 
     def validate(self, data):
         self.auth_validate(data)
-        data = super().validate(data) 
+        data = super().validate(data)
         return data

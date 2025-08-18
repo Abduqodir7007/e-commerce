@@ -1,6 +1,6 @@
 from .utils import send_email
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from .serializers import *
 from .models import *
@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.http import Http404
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+
 class CreateUser(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = SignUpSerializer
@@ -16,13 +17,14 @@ class CreateUser(CreateAPIView):
         AllowAny,
     ]
 
+
 class LoginView(TokenObtainPairView):
-    permission_classes = [AllowAny, ]
+    permission_classes = [
+        AllowAny,
+    ]
     serializer_class = LoginSerializer
-    
-    
-    
-    
+
+
 class VerifyView(APIView):
     permission_classes = [
         IsAuthenticated,
@@ -84,7 +86,7 @@ class ResetPassword(APIView):
                 code = user.create_code()
                 send_email(code, user)
 
-                return Response({"msg": "Code sent", "verification":""})
+                return Response({"msg": "Code sent", "verification": ""})
 
         except User.DoesNotExist:
             raise Http404
@@ -92,5 +94,10 @@ class ResetPassword(APIView):
             raise e
 
 
-class ResetPasswordFinish(APIView):
-    pass
+class ResetPasswordFinish(UpdateAPIView):
+    serializer_class = ResetPasswordFinishSer
+    
+    def get_object(self):
+        return self.request.user
+    
+    
