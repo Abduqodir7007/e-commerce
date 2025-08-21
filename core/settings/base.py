@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "common",
     "orders",
 ]
+CELERY_BROKER_URL = "redis://localhost:6379/0"
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -86,12 +87,11 @@ CKEDITOR_5_CONFIGS = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST_USER = "abdukodirarifzanov@gmail.com"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# EMAIL_HOST = "smtp.google.com"  # Use 'smtp-mail.outlook.com' if needed
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-# SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST = "smtp.google.com" 
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+SERVER_EMAIL = EMAIL_HOST_USER
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

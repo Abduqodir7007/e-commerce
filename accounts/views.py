@@ -1,4 +1,4 @@
-from .utils import send_email
+from accounts.tasks import send_otp_code_to_email
 from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from .serializers import *
@@ -9,6 +9,7 @@ from django.http import Http404
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status
 from django.utils import timezone
+
 
 class CreateUser(CreateAPIView):
     queryset = User.objects.all()
@@ -84,7 +85,7 @@ class ResetPassword(APIView):
 
             if user is not None:
                 code = user.create_code()
-                send_email(code, user)
+                send_otp_code_to_email(code, user)
 
                 return Response({"msg": "Code sent", "verification": ""})
 
@@ -112,7 +113,7 @@ class GetNewCodeView(APIView):
         self.check_code_exists(user, verify_type)
         code = user.create_code()
 
-        send_email(code, user)
+        send_otp_code_to_email(code, user)
 
         return Response({"msg": "New code sent"})
 

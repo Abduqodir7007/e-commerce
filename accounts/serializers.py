@@ -1,5 +1,5 @@
+from accounts.tasks import send_otp_code_to_email
 from .models import User
-from accounts.utils import send_email
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
@@ -43,7 +43,7 @@ class SignUpSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         code = user.create_code()
-        send_email(code, user.email)
+        send_otp_code_to_email(code, user.email)
         return user
 
 
