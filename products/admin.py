@@ -14,7 +14,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(MPTTModelAdmin):
-    list_display = ("id", "name",    "parent")
+    list_display = ("id", "name", "parent")
     search_fields = ("name",)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -25,7 +25,7 @@ class CategoryAdmin(MPTTModelAdmin):
 
 
 class ProductColorAdmin(admin.ModelAdmin):
-    list_display = ("id",)
+    list_display = ("id", "product", "color")
 
 
 class ProductReviewAdmin(admin.ModelAdmin):
@@ -34,7 +34,7 @@ class ProductReviewAdmin(admin.ModelAdmin):
 
 
 class ProductSizeAdmin(admin.ModelAdmin):
-    list_display = ("value",)
+    list_display = ("id", "value", "product")
 
 
 admin.site.register(Product, ProductAdmin)

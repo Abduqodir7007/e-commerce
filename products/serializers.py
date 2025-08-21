@@ -22,3 +22,12 @@ class ProductSerializer(serializers.ModelSerializer):
             "in_stock",
             "thumbnail",
         )
+
+
+class ColorSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    color = MediaSerializer(read_only=True)
+    
+class SizeSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    value = serializers.CharField()

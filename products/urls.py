@@ -6,6 +6,8 @@ from django.conf import settings
 urlpatterns = [
     path("categories/", CategoryView.as_view()),
     path("products/", ProductsView.as_view()),
+    path("colors/", ProductColorView.as_view()),
+    path("sizes/", ProductSizeView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

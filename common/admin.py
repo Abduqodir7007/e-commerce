@@ -1,7 +1,12 @@
 from django.contrib import admin
 from .models import *
 
-admin.site.register(Media)
+
+class MediaAdmin(admin.ModelAdmin):
+    list_display = ("id",)
+
+
+admin.site.register(Media, MediaAdmin)
 admin.site.register(Settings)
 admin.site.register(Country)
 admin.site.register(Region)

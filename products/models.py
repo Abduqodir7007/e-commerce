@@ -58,11 +58,12 @@ class Product(models.Model):
         on_delete=models.CASCADE,
         related_name="products",
     )
-
+    def __str__(self):
+        return self.name
 
 class ProductColor(models.Model):
-    color = models.ForeignKey(Media, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="color")
+    color = models.ForeignKey(Media, on_delete=models.CASCADE,related_name='color')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="colors")
 
     def __str__(self):
         return f"{self.product.name}"
@@ -74,7 +75,7 @@ class ProductColor(models.Model):
 
 class ProductSize(models.Model):
     value = models.CharField(max_length=10)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sizes')
 
     class Meta:
         verbose_name = "Product Size"
