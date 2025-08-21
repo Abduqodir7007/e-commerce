@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.http import Http404
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+from rest_framework import status
+from django.utils import timezone
 
 class CreateUser(CreateAPIView):
     queryset = User.objects.all()
@@ -45,7 +46,8 @@ class VerifyView(APIView):
                 "success": True,
                 "access": user.token()["access"],
                 "refresh": user.token()["refresh"],
-            }
+            },
+            status=status.HTTP_200_OK,
         )
 
     @staticmethod
@@ -54,7 +56,7 @@ class VerifyView(APIView):
         otp = user.codes.filter(
             user=user,
             code=code,
-            expiration_time__gte=datetime.now(),
+            expiration_time__gte=timezone.now(),
             is_confirmed=False,
         )
 
@@ -63,7 +65,6 @@ class VerifyView(APIView):
             raise ValidationError(data)
         else:
             otp.update(is_confirmed=True, type=verify_type)
-
         return True
 
 

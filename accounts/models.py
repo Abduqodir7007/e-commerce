@@ -8,7 +8,7 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import datetime, timedelta
-
+from django.utils import timezone
 EXPIRATION_TIME = 1
 
 
@@ -59,8 +59,8 @@ class User(AbstractUser):
     def token(self):
         refresh = RefreshToken.for_user(self)
         return {
-            "access": str(refresh.access_token),
             "refresh": str(refresh),
+            "access": str(refresh.access_token),
         }
 
 
@@ -83,7 +83,7 @@ class VerificationOtp(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.expiration_time:
-            self.expiration_time = datetime.now() + timedelta(minutes=EXPIRATION_TIME)
+            self.expiration_time = timezone.now() + timedelta(minutes=EXPIRATION_TIME)
         super(VerificationOtp, self).save(*args, **kwargs)
 
 
