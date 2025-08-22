@@ -20,7 +20,7 @@ class ProductsView(ListAPIView):
     serializer_class = ProductSerializer
 
     def get_queryset(self):
-        min_price = self.request.query_params.get("min_price", None)
+        min_price = self.request.query_params.get("min_price", None)    
         max_price = self.request.query_params.get("max_price", None)
         category = self.request.query_params.get("category", None)
         size_id = self.request.query_params.get("size", None)

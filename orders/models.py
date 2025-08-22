@@ -11,6 +11,10 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField()
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def save(self, *args, **kwargs):
+        self.subtotal = self.quantity * self.product.price
+        super().save(*args, **kwargs)
+
 
 class Card(models.Model):
     card_name = models.CharField(max_length=100)

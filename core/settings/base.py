@@ -87,12 +87,19 @@ CKEDITOR_5_CONFIGS = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST_USER = "abdukodirarifzanov@gmail.com"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST = "smtp.google.com" 
+EMAIL_HOST = "smtp.google.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 SERVER_EMAIL = EMAIL_HOST_USER
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "E-COMMERCE API",
+    "DESCRIPTION": "E-COMMERCE",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SORT_OPERATIONS": False,
+}
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -103,7 +110,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=3),  # default: 5 minutes
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=3),  
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 

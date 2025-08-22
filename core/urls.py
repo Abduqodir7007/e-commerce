@@ -10,6 +10,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/", include("accounts.urls")),
     path("api/product/", include("products.urls")),
+    path("api/order/", include("orders.urls")),
     path("ckeditor5/", include("django_ckeditor_5.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
