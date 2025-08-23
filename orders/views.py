@@ -1,14 +1,15 @@
 from rest_framework import status
-from django.shortcuts import render
 from .models import *
 from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import UpdateAPIView, ListAPIView, DestroyAPIView
+
+from django.http import Http404
 
 
-class CartView(APIView):
+class CartAddView(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
@@ -21,7 +22,7 @@ class CartView(APIView):
             product = Product.objects.get(id=data.get("id"))
             if CartItem.objects.filter(product=product, user=request.user).exists():
                 return Response(data={"msg": "Already added"})
-            
+
             item = CartItem.objects.create(
                 user=request.user, quantity=data.get("quantity"), product=product
             )
@@ -41,7 +42,7 @@ class UpdataCartView(APIView):
         try:
             product = Product.objects.get(id=pk)
             item = CartItem(product=product, user=request.user)
-            serializer = CartSerializer(item, data=request.data, partial=True)
+            serializer = CartItemUpdateSerializer(item, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(data={"msg": "Updated"})
@@ -49,3 +50,19 @@ class UpdataCartView(APIView):
             return Response(data={"msg": "Product does not found"})
         except Exception as e:
             return Response(data={"msg": f"Error: {e}"})
+
+
+class CartItemsView(ListAPIView):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemsSerializer
+
+
+class DeleteCartItemView(DestroyAPIView):
+    serializer_class = CartItemUpdateSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        try:
+            return CartItem.objects.filter(id=pk)
+        except CartItem.DoesNotExist:
+            raise Http404("Item not found")

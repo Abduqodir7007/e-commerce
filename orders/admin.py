@@ -3,7 +3,7 @@ from .models import *
 
 
 class CartItemAdmin(admin.ModelAdmin):
-    list_display = ("user", "product", "quantity", "subtotal")
+    list_display = ("id", "user", "product", "quantity", "subtotal")
 
 
 class CardAdmin(admin.ModelAdmin):

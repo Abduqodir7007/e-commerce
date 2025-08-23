@@ -1,7 +1,7 @@
 from rest_framework import serializers
+from products.serializers import ProductSerializer
 
-
-class CartSerializer(serializers.Serializer):
+class CartItemUpdateSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
     quantity = serializers.IntegerField(required=True)
 
@@ -13,3 +13,7 @@ class CartSerializer(serializers.Serializer):
 
 
 
+class CartItemsSerializer(serializers.Serializer):
+    product = ProductSerializer(read_only=True)
+    quantity = serializers.IntegerField()
+    subtotal = serializers.FloatField()
