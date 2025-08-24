@@ -8,8 +8,9 @@ urlpatterns = [
     path("products/", ProductsView.as_view()),
     path("colors/", ProductColorView.as_view()),
     path("sizes/", ProductSizeView.as_view()),
-    path("review/", CreateReviewView.as_view()), 
-    path('<str:pk>/reviews/', ProductReviews.as_view())
+    path("review/", CreateReviewView.as_view()),
+    path("<str:pk>/reviews/", ProductReviews.as_view()),
+    path("related-products/<str:pk>/", GetRelatedProductsView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

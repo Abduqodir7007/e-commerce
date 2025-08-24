@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework.response import Response
 from django.shortcuts import render
 from .models import *
@@ -68,14 +69,30 @@ class CreateReviewView(APIView):
             return Response(data={"msg": f"Error: {e}"})
 
 
-class ProductReviews(APIView):
+class ProductReviews(APIView): 
     def get(self, request, pk):
         product = Product.objects.get(id=pk)
-        reviews = product.review.select_related('user').all()  # type: ignore
+        reviews = product.review.select_related("user").all()  # type: ignore
         result = []
         for review in reviews:
             result.append(
-                {"user": review.user.full_name, "review": review.review, "rating": review.rating}
+                {
+                    "user": review.user.full_name,
+                    "review": review.review,
+                    "rating": review.rating,
+                }
             )
 
         return Response(data={"msg": "Success", "result": result})
+
+
+class GetRelatedProductsView(ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        try:
+            product = Product.objects.get(id=pk)
+            return Product.objects.filter(category=product.category).exclude(id=pk)
+        except Product.DoesNotExist:
+            raise Http404("Item not found")

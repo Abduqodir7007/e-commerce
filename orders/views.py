@@ -4,7 +4,7 @@ from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import UpdateAPIView, ListAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, DestroyAPIView
 
 from django.http import Http404
 
