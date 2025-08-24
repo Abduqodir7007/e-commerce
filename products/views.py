@@ -6,7 +6,7 @@ from .serializers import *
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-
+from rest_framework import status
 
 class CategoryView(ListAPIView):
     permission_classes = [
@@ -69,22 +69,25 @@ class CreateReviewView(APIView):
             return Response(data={"msg": f"Error: {e}"})
 
 
-class ProductReviews(APIView): 
+class ProductReviews(APIView):
+     
     def get(self, request, pk):
-        product = Product.objects.get(id=pk)
-        reviews = product.review.select_related("user").all()  # type: ignore
-        result = []
-        for review in reviews:
-            result.append(
-                {
-                    "user": review.user.full_name,
-                    "review": review.review,
-                    "rating": review.rating,
-                }
-            )
+        try:
+            product = Product.objects.get(id=pk)
+            reviews = product.review.select_related("user").all()  # type: ignore
+            result = []
+            for review in reviews:
+                result.append(
+                    {
+                        "user": review.user.full_name,
+                        "review": review.review,
+                        "rating": review.rating,
+                    }
+                )
 
-        return Response(data={"msg": "Success", "result": result})
-
+            return Response(data={"msg": "Success", "result": result}, status=status.HTTP_200_OK)
+        except Product.DoesNotExist:
+            return Http404('Product not found')
 
 class GetRelatedProductsView(ListAPIView):
     serializer_class = ProductSerializer

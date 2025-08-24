@@ -13,10 +13,11 @@ class CartAddView(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
+    serializer_class = CartItemsSerializer
 
     def post(self, request):
         try:
-            serializer = CartSerializer(data=request.data)
+            serializer = CartItemsSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             data = serializer.validated_data
             product = Product.objects.get(id=data.get("id"))
@@ -38,6 +39,8 @@ class CartAddView(APIView):
 
 
 class UpdataCartView(APIView):
+    serializer_class = CartItemUpdateSerializer
+
     def put(self, request, pk):
         try:
             product = Product.objects.get(id=pk)
@@ -59,7 +62,7 @@ class CartItemsView(ListAPIView):
 
 class DeleteCartItemView(DestroyAPIView):
     serializer_class = CartItemUpdateSerializer
-    
+
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         try:

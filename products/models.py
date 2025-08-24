@@ -97,5 +97,6 @@ class ProductReview(models.Model):
         return f"{self.product.name}" + "review"
 
     class Meta:
+        unique_together = ('product', 'user')
         verbose_name = "Product Review"
         verbose_name_plural = "Product Reviews"
