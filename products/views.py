@@ -1,8 +1,10 @@
+from rest_framework.response import Response
 from django.shortcuts import render
 from .models import *
 from .serializers import *
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 
 class CategoryView(ListAPIView):
@@ -20,7 +22,7 @@ class ProductsView(ListAPIView):
     serializer_class = ProductSerializer
 
     def get_queryset(self):
-        min_price = self.request.query_params.get("min_price", None)    
+        min_price = self.request.query_params.get("min_price", None)
         max_price = self.request.query_params.get("max_price", None)
         category = self.request.query_params.get("category", None)
         size_id = self.request.query_params.get("size", None)
@@ -50,3 +52,30 @@ class ProductColorView(ListAPIView):
 class ProductSizeView(ListAPIView):
     queryset = ProductSize.objects.all()
     serializer_class = SizeSerializer
+
+
+class CreateReviewView(APIView):
+    serializer_class = CreateReviewSerializer
+
+    def post(self, request):
+        try:
+            serializer = CreateReviewSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = request.user
+            serializer.save(user=user)
+            return Response(data={"msg": "Review Created"})
+        except Exception as e:
+            return Response(data={"msg": f"Error: {e}"})
+
+
+class ProductReviews(APIView):
+    def get(self, request, pk):
+        product = Product.objects.get(id=pk)
+        reviews = product.review.select_related('user').all()  # type: ignore
+        result = []
+        for review in reviews:
+            result.append(
+                {"user": review.user.full_name, "review": review.review, "rating": review.rating}
+            )
+
+        return Response(data={"msg": "Success", "result": result})

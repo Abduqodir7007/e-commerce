@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import datetime, timedelta
 from django.utils import timezone
+
 EXPIRATION_TIME = 1
 
 
@@ -47,6 +48,9 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     def create_code(self):
         code = "".join([str(random.randint(0, 100) % 10) for i in range(5)])
@@ -54,7 +58,7 @@ class User(AbstractUser):
             user_id=self.id,  # type: ignore
             code=code,
         )
-        return code, self.id # type: ignore
+        return code, self.id  # type: ignore
 
     def token(self):
         refresh = RefreshToken.for_user(self)

@@ -39,7 +39,6 @@ class Product(models.Model):
     quantity = models.IntegerField()
     in_stock = models.BooleanField(default=False)
     instruction = CKEditor5Field("Text", config_name="awesome_ckeditor")
-    # image = models.ForeignKey(Media, on_delete=models.CASCADE)
     discount = models.IntegerField(
         help_text="discount in percentage",
         validators=[discount_validator],
@@ -58,12 +57,16 @@ class Product(models.Model):
         on_delete=models.CASCADE,
         related_name="products",
     )
+
     def __str__(self):
         return self.name
 
+
 class ProductColor(models.Model):
-    color = models.ForeignKey(Media, on_delete=models.CASCADE,related_name='color')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="colors")
+    color = models.ForeignKey(Media, on_delete=models.CASCADE, related_name="color")
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="colors"
+    )
 
     def __str__(self):
         return f"{self.product.name}"
@@ -75,7 +78,7 @@ class ProductColor(models.Model):
 
 class ProductSize(models.Model):
     value = models.CharField(max_length=10)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sizes')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="sizes")
 
     class Meta:
         verbose_name = "Product Size"
@@ -87,7 +90,7 @@ class ProductReview(models.Model):
     rating = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="reviews"
+        Product, on_delete=models.CASCADE, related_name="review"
     )
 
     def __str__(self) -> str:

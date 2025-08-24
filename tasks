@@ -1,3 +1,1 @@
-cart-item/<str:pk>/delete # Delete item in the cart
-cart-items/ get all items in the cart 
-reviews/ create review for a product 
+product/1/review/ all review related to pruduct
