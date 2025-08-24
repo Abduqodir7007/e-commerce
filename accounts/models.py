@@ -94,11 +94,11 @@ class VerificationOtp(models.Model):
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
     name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20, validators=[RegexValidator(r"^\+?1?\d{9,15}$")])
     apartment = models.CharField(max_length=255)
     street = models.TextField()
     pin_code = models.CharField(max_length=255)
-    # city
+    
 
     def __str__(self):
         return f"{self.user} {self.name}"

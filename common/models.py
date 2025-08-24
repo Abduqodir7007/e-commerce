@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 
+
 class Media(models.Model):
     MEDIA_TYPE = (
         ("image", "image"),
@@ -51,8 +52,6 @@ class Media(models.Model):
                 raise ValidationError("wrong")
         else:
             raise ValidationError("File type is not valid")
-
-
 
 
 class Settings(models.Model):
@@ -109,7 +108,7 @@ class CustomerFeedback(models.Model):
 
     def __str__(self):
         return self.full_name
-    
+
     class Meta:
         verbose_name = "Customer Feedback"
         verbose_name_plural = "Customer Feedbacks"

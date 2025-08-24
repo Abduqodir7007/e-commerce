@@ -1,5 +1,5 @@
+from .models import *
 from accounts.tasks import send_otp_code_to_email
-from .models import User
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
@@ -103,3 +103,39 @@ class LoginSerializer(TokenObtainPairSerializer):
         data = super().validate(data)
         return data
 
+
+class AddressSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    phone_number = serializers.IntegerField()
+    apartment = serializers.CharField()
+    street = serializers.CharField()
+    pin_code = serializers.IntegerField()
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        return Address.objects.create(user=user, **validated_data)
+
+
+class UpdateAdderessSerializer(serializers.Serializer):
+    user = serializers.ReadOnlyField(source="user.full_name")
+    name = serializers.CharField()
+    phone_number = serializers.IntegerField()
+    apartment = serializers.CharField()
+    street = serializers.CharField()
+    pin_code = serializers.IntegerField()
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        return Address.objects.create(user=user, **validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.phone_number = validated_data.get(
+            "phone_number", instance.phone_number
+        )
+        instance.apartment = validated_data.get("apartment", instance.apartment)
+        instance.street = validated_data.get("street", instance.street)
+        instance.pin_code = validated_data.get("pin_code", instance.pin_code)
+        instance.save()
+        return instance

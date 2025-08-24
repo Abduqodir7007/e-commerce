@@ -1,5 +1,10 @@
 from accounts.tasks import send_otp_code_to_email
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    UpdateAPIView,
+    ListAPIView,
+    DestroyAPIView,
+)
 from rest_framework.views import APIView
 from .serializers import *
 from .models import *
@@ -9,6 +14,7 @@ from django.http import Http404
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status
 from django.utils import timezone
+from .permissions import IsOwner
 
 
 class CreateUser(CreateAPIView):
@@ -128,3 +134,26 @@ class GetNewCodeView(APIView):
         code.update(type=verify_type)
         if code.exists():
             raise ValidationError({"msg": "You have valid code!"})
+
+
+class CreateAddressView(CreateAPIView, ListAPIView, DestroyAPIView):
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == "GET" or self.request.method == "DELETE":
+            return AddressSerializer
+        return UpdateAdderessSerializer
+
+
+class UpdateAddressView(UpdateAPIView):
+    permission_classes = [IsOwner, IsAuthenticated]
+    queryset = Address.objects.all()
+    serializer_class = UpdateAdderessSerializer
+    lookup_field = "pk"
+
+
+class DeleteAddressView(DestroyAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
