@@ -91,9 +91,10 @@ class Order(models.Model):
     items = models.ManyToManyField(CartItem, related_name="orders")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
-    cart = models.ForeignKey(CartItem, on_delete=models.SET_NULL, null=True)
     status = models.CharField(choices=STATUS, default="created")
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    payment_method = models.CharField(
+        max_length=20, choices=PAYMENT_METHODS, null=True, blank=True
+    )
     payment_status = models.CharField(
         max_length=20, choices=PAYMENT_STATUS, default="pending"
     )

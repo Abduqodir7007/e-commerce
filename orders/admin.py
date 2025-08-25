@@ -30,7 +30,7 @@ class DeliveryTrafficAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("user", "total_amount", "status")
+    list_display = ("id", "user", "total_amount", "status")
 
 
 admin.site.register(CartItem, CartItemAdmin)

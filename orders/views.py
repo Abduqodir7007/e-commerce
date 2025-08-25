@@ -1,10 +1,16 @@
 from rest_framework import status
 from .models import *
 from .serializers import *
+from accounts.permissions import IsOwner
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, DestroyAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    DestroyAPIView,
+    CreateAPIView,
+    UpdateAPIView,
+)
 
 from django.http import Http404
 
@@ -13,11 +19,11 @@ class CartAddView(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
-    serializer_class = CartItemsSerializer
+    serializer_class = CartItemAddUpdateSerializer
 
     def post(self, request):
         try:
-            serializer = CartItemsSerializer(data=request.data)
+            serializer = CartItemAddUpdateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             data = serializer.validated_data
             product = Product.objects.get(id=data.get("id"))
@@ -39,13 +45,15 @@ class CartAddView(APIView):
 
 
 class UpdataCartView(APIView):
-    serializer_class = CartItemUpdateSerializer
+    serializer_class = CartItemAddUpdateSerializer
 
     def put(self, request, pk):
         try:
             product = Product.objects.get(id=pk)
             item = CartItem(product=product, user=request.user)
-            serializer = CartItemUpdateSerializer(item, data=request.data, partial=True)
+            serializer = CartItemAddUpdateSerializer(
+                item, data=request.data, partial=True
+            )
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(data={"msg": "Updated"})
@@ -56,12 +64,14 @@ class UpdataCartView(APIView):
 
 
 class CartItemsView(ListAPIView):
-    queryset = CartItem.objects.all()
     serializer_class = CartItemsSerializer
+
+    def get_queryset(self):
+        return CartItem.objects.filter(user=self.request.user)
 
 
 class DeleteCartItemView(DestroyAPIView):
-    serializer_class = CartItemUpdateSerializer
+    serializer_class = CartItemAddUpdateSerializer
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -69,3 +79,51 @@ class DeleteCartItemView(DestroyAPIView):
             return CartItem.objects.filter(id=pk)
         except CartItem.DoesNotExist:
             raise Http404("Item not found")
+
+
+class OrderCreateView(CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = OrderCreateSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            items = CartItem.objects.filter(
+                id__in=serializer.validated_data.get("item")
+            )
+            if not items.exists():
+                return Response(data={"msg": "Product not found"})
+
+            total_amount = sum([item.subtotal for item in items])
+            address = Address.objects.get(id=serializer.validated_data.get("address"))
+
+            order = Order.objects.create(
+                user=request.user, address=address, total_amount=total_amount
+            )
+            order.items.set(items)
+            order.save()
+            return Response(data={"msg": "Created"})
+        except Exception as e:
+            return Response(data={"msg": f"{e}"})
+
+
+class OrderListView(ListAPIView):
+    serializer_class = OrderListSerializer
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+
+class OrderUpdateView(UpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderUpdateSerializer
+    lookup_field = "pk"
+
+
+class DeleteOrderView(DestroyAPIView):
+    permission_classes = [IsOwner]
+    queryset = Order.objects.all()
+    serializer_class = OrderCreateSerializer
+    lookup_field = "pk"
