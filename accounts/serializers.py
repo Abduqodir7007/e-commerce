@@ -118,7 +118,7 @@ class AddressSerializer(serializers.Serializer):
 
 
 class UpdateAdderessSerializer(serializers.Serializer):
-    user = serializers.ReadOnlyField(source="user.full_name")
+    user = serializers.CharField(source="user.full_name", read_only=True)
     name = serializers.CharField()
     phone_number = serializers.IntegerField()
     apartment = serializers.CharField()

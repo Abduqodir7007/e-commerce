@@ -12,5 +12,5 @@ urlpatterns = [
     ),
     path("get-newcode/", GetNewCodeView.as_view(), name="new_code"),
     path("address/", CreateAddressView.as_view()),
-    path("address/<str:pk>/update/", UpdateAddressView.as_view()),
+    path("address/<str:pk>/", UpdateAddressView.as_view()),
 ]

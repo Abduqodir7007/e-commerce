@@ -136,7 +136,7 @@ class GetNewCodeView(APIView):
             raise ValidationError({"msg": "You have valid code!"})
 
 
-class CreateAddressView(CreateAPIView, ListAPIView, DestroyAPIView):
+class CreateAddressView(CreateAPIView, ListAPIView):
 
     def get_queryset(self):
         return Address.objects.filter(user=self.request.user)
@@ -147,13 +147,8 @@ class CreateAddressView(CreateAPIView, ListAPIView, DestroyAPIView):
         return UpdateAdderessSerializer
 
 
-class UpdateAddressView(UpdateAPIView):
+class UpdateAddressView(UpdateAPIView, DestroyAPIView):
     permission_classes = [IsOwner, IsAuthenticated]
     queryset = Address.objects.all()
     serializer_class = UpdateAdderessSerializer
     lookup_field = "pk"
-
-
-class DeleteAddressView(DestroyAPIView):
-    queryset = Address.objects.all()
-    serializer_class = AddressSerializer
