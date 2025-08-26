@@ -28,7 +28,7 @@ class OrderCreateSerializer(serializers.Serializer):
 
 class OrderItemSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    product = ProductSerializer()  # Assuming you have a ProductSerializer
+    product = ProductSerializer()
     quantity = serializers.IntegerField()
 
 
