@@ -9,7 +9,9 @@ class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True
+    )
 
     def save(self, *args, **kwargs):
         self.subtotal = self.quantity * self.product.price

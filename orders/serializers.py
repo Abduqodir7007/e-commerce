@@ -26,26 +26,38 @@ class OrderCreateSerializer(serializers.Serializer):
     address = serializers.IntegerField(required=True)
 
 
+class OrderItemSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    product = ProductSerializer()  # Assuming you have a ProductSerializer
+    quantity = serializers.IntegerField()
+
+
 class OrderUpdateSerializer(serializers.Serializer):
     items = serializers.ListField(child=serializers.IntegerField())
     address = AddressSerializer(required=False)
 
     def update(self, instance, validated_data):  # TO DO: update enpoint is now working
         address_id = validated_data.get("address", instance.address.id)
-
-        if "item" in validated_data:  # request provided new items (even empty [])
-            item_ids = validated_data["item"]
-        else:  # keep existing items
-            item_ids = list(instance.items.values_list("id", flat=True))
+        item_ids = validated_data.get("items") or instance.items.values_list(
+            "id", flat=True
+        )
 
         address = Address.objects.get(id=address_id)
         items = CartItem.objects.filter(id__in=item_ids)
 
         instance.address = address
         instance.save()
+        instance.items.set(items)
         return instance
 
-        instance.items.set(items)
+    def to_representation(self, instance):
+        return {
+            "id": instance.id,
+            "items": OrderItemSerializer(instance.items.all(), many=True).data,
+            "address": (
+                AddressSerializer(instance.address).data if instance.address else None
+            ),
+        }
 
 
 class OrderListSerializer(serializers.Serializer):

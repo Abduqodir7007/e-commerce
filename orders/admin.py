@@ -32,6 +32,12 @@ class DeliveryTrafficAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "total_amount", "status")
 
+    # def formfield_for_manytomany(self, db_field, request, **kwargs):  TO DO
+    #     if db_field.name == "items":
+    #         orders = Order.objects.filter(user=request.user)
+    #         kwargs["queryset"] = orders
+    #     return super().formfield_for_manytomany(db_field, request, **kwargs)
+
 
 admin.site.register(CartItem, CartItemAdmin)
 admin.site.register(Card, CardAdmin)
