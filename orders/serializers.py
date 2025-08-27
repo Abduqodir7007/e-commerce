@@ -32,37 +32,47 @@ class OrderItemSerializer(serializers.Serializer):
     quantity = serializers.IntegerField()
 
 
-class OrderUpdateSerializer(serializers.Serializer):
-    items = serializers.ListField(child=serializers.IntegerField())
-    address = AddressSerializer(required=False)
-
-    def update(self, instance, validated_data):  # TO DO: update enpoint is now working
-        address_id = validated_data.get("address", instance.address.id)
-        item_ids = validated_data.get("items") or instance.items.values_list(
-            "id", flat=True
-        )
-
-        address = Address.objects.get(id=address_id)
-        items = CartItem.objects.filter(id__in=item_ids)
-
-        instance.address = address
-        instance.save()
-        instance.items.set(items)
-        return instance
-
-    def to_representation(self, instance):
-        return {
-            "id": instance.id,
-            "items": OrderItemSerializer(instance.items.all(), many=True).data,
-            "address": (
-                AddressSerializer(instance.address).data if instance.address else None
-            ),
-        }
-
-
 class OrderListSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     items = CartItemsSerializer(many=True)
     total_amount = serializers.FloatField()
     is_paid = serializers.BooleanField()
     address = AddressSerializer(read_only=True)
+
+
+class OrderDiscountSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+    discount_code = serializers.CharField()
+
+    def validate_discoiunt_code(self, value):
+        if 3 > len(value) and len(value) > 5:
+            raise ValueError("Invalid code")
+
+
+# Extra feature
+# class OrderUpdateSerializer(serializers.Serializer):
+#     items = serializers.ListField(child=serializers.IntegerField())
+#     address = AddressSerializer(required=False)
+
+#     def update(self, instance, validated_data):  # TO DO: update enpoint is now working
+#         address_id = validated_data.get("address", instance.address.id)
+#         item_ids = validated_data.get("items") or instance.items.values_list(
+#             "id", flat=True
+#         )
+
+#         address = Address.objects.get(id=address_id)
+#         items = CartItem.objects.filter(id__in=item_ids)
+
+#         instance.address = address
+#         instance.save()
+#         instance.items.set(items)
+#         return instance
+
+#     def to_representation(self, instance):
+#         return {
+#             "id": instance.id,
+#             "items": OrderItemSerializer(instance.items.all(), many=True).data,
+#             "address": (
+#                 AddressSerializer(instance.address).data if instance.address else None
+#             ),
+#         }

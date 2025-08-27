@@ -5,6 +5,7 @@ from accounts.permissions import IsOwner
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from datetime import datetime
 from rest_framework.generics import (
     ListAPIView,
     DestroyAPIView,
@@ -116,14 +117,39 @@ class OrderListView(ListAPIView):
         return Order.objects.filter(user=self.request.user)
 
 
-class OrderUpdateView(UpdateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderUpdateSerializer
-    lookup_field = "pk"
-
-
 class DeleteOrderView(DestroyAPIView):
     permission_classes = [IsOwner]
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
     lookup_field = "pk"
+
+
+class OrderDiscountView(APIView):
+    serializer_class = OrderDiscountSerializer
+
+    def post(self, request):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            order = Order.objects.get(id=serializer.validated_data.get("order_id"))
+            discount = Discount.objects.get(
+                code=serializer.validated_data.get("discount_code"),
+                is_active=True,
+                end_date__gte=datetime.now(),
+            )
+            if order.total_amount < int(discount.min_amount):
+                return Response(data={"msg": "You cannot apply this discount"})
+            order.total_amount = order.total_amount * (1 - discount.percentage / 100)
+            order.discount = discount
+            order.save()
+            return Response(data={"msg": "Discount applied"})
+        except Discount.DoesNotExist:
+            return Response(data={"msg": "Wrong discount code"})
+        except Order.DoesNotExist:
+            return Response(data={"msg": "Order does not exist"})
+
+
+# class OrderUpdateView(UpdateAPIView):
+#     queryset = Order.objects.all()
+#     serializer_class = OrderUpdateSerializer
+#     lookup_field = "pk"

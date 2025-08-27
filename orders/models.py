@@ -2,9 +2,9 @@ from django.db import models
 from accounts.models import User, Address
 from products.models import Product
 from common.models import Region
+from datetime import datetime
 
 
-# Create your models here.
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -27,16 +27,16 @@ class Card(models.Model):
 
 
 class Discount(models.Model):
-
     min_amount = models.CharField(help_text="Minimum amount for discount to apply")
     code = models.CharField(max_length=50, unique=True)
     percentage = models.IntegerField(help_text="Discount percentage")
     strart_date = models.DateTimeField()
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
-    products = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="discounts"
-    )
+
+    def save(self, *args, **kwargs):
+        self.is_active = False if datetime.now() > self.end_date else True
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.code
@@ -91,7 +91,7 @@ class Order(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     items = models.ManyToManyField(CartItem, related_name="orders")
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    total_amount = models.FloatField()
     is_paid = models.BooleanField(default=False)
     status = models.CharField(choices=STATUS, default="created")
     payment_method = models.CharField(
@@ -101,13 +101,21 @@ class Order(models.Model):
         max_length=20, choices=PAYMENT_STATUS, default="pending"
     )
     discount = models.ForeignKey(
-        Discount, on_delete=models.SET_NULL, null=True, related_name="orders"
+        Discount,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="orders",
     )
     address = models.ForeignKey(
         Address, on_delete=models.SET_NULL, null=True, related_name="orders"
     )
     delivery_traffic = models.ForeignKey(
-        DeliveryTraffice, on_delete=models.SET_NULL, null=True, related_name="orders"
+        DeliveryTraffice,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="orders",
     )
 
     def __str__(self):
