@@ -13,7 +13,7 @@ def discount_validator(x):
 
 
 class Category(MPTTModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     image = models.ForeignKey(Media, on_delete=models.SET_NULL, null=True, blank=True)
     parent = TreeForeignKey(
         "self",

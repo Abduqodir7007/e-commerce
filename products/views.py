@@ -88,12 +88,17 @@ class ProductReviews(APIView):
 
 
 class GetRelatedProductsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ProductSerializer
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         try:
             product = Product.objects.get(id=pk)
-            return Product.objects.filter(category=product.category).exclude(id=pk)
+            return (
+                Product.objects.filter(category=product.category)
+                .exclude(id=pk)
+                .order_by("id")
+            )
         except Product.DoesNotExist:
             raise Http404("Item not found")

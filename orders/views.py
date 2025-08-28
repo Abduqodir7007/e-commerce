@@ -90,7 +90,7 @@ class OrderCreateView(CreateAPIView):
         try:
             serializer = OrderCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-
+            #payment = serializer.validated_data.get('payment')
             items = CartItem.objects.filter(
                 id__in=serializer.validated_data.get("item")
             )

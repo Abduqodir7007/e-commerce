@@ -24,6 +24,7 @@ class CartItemsSerializer(serializers.Serializer):
 class OrderCreateSerializer(serializers.Serializer):
     item = serializers.ListField(child=serializers.IntegerField())
     address = serializers.IntegerField(required=True)
+    payment_status = serializers.CharField(required=True)
 
 
 class OrderItemSerializer(serializers.Serializer):
