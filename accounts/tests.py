@@ -77,5 +77,3 @@ class TestLoginView(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 400)
 
-class TestGetNewCodeView(APITestCase):
-    pass

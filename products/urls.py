@@ -4,12 +4,12 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path("categories/", CategoryView.as_view()),
+    path("categories/", CategoryView.as_view(), name="category"),
     path("products/", ProductsView.as_view()),
     path("colors/", ProductColorView.as_view()),
     path("sizes/", ProductSizeView.as_view()),
     path("review/", CreateReviewView.as_view()),
-    path("<str:pk>/reviews/", ProductReviews.as_view()),
+    path("<str:pk>/reviews/", ProductReviews.as_view(), name="review"),
     path("related-products/<str:pk>/", GetRelatedProductsView.as_view()),
 ]
 

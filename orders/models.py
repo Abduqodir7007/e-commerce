@@ -48,18 +48,16 @@ class Branch(models.Model):
         Region, on_delete=models.CASCADE, related_name="branches"
     )
     address = models.CharField(max_length=255)
-    longtitude = models.FloatField()
-    latitude = models.FloatField()
+    longtitude = models.FloatField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class DeliveryTraffice(models.Model):
-    high = models.FloatField()
-    width = models.FloatField()
-    weight = models.FloatField()
-    delivery_time = models.TimeField()
+    weight = models.FloatField(help_text="In kilogram")
+    delivery_time = models.DurationField(help_text="in hours")
     price = models.FloatField()
     branch = models.ForeignKey(
         Branch, on_delete=models.CASCADE, related_name="delivery_traffic"

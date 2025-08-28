@@ -55,7 +55,15 @@ class CreateReviewSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
+class ReviewSerializer(serializers.Serializer):
+    user = serializers.StringRelatedField()
+    review = serializers.CharField()
+    rating = serializers.IntegerField()
+
+
 class ProductReviewSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
     review = serializers.CharField()
     rating = serializers.IntegerField()
     product_id = serializers.IntegerField()
