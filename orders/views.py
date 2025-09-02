@@ -107,7 +107,7 @@ class OrderCreateView(CreateAPIView):
             order.save()
             return Response(data={"msg": "Created"})
         except Exception as e:
-            return Response(data={"msg": f"{e}"})
+            return Response(data={"msg": e})
 
 
 class OrderListView(ListAPIView):

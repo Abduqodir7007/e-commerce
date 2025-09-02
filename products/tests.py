@@ -7,11 +7,9 @@ from products.models import ProductReview, Product, Category
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-
-
 def create_product(*args, **kwargs):
     category, _ = Category.objects.get_or_create(name="test category")
-    
+
     return Product.objects.create(
         name="testname",
         brand="testbrand",
@@ -29,8 +27,9 @@ def create_user(*args, **kwargs):
         first_name="testuser",
         last_name="testlastname",
         password="password123",
-        email="test@gmmail.com",
+        email="test@gmail.com",
     )
+
 
 
 class TestCategoryView(APITestCase):
