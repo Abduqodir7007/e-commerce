@@ -14,3 +14,4 @@ def send_otp_code_to_email(code, email):
         recipient_list=[email],
         fail_silently=False,
     )
+    print("hello")

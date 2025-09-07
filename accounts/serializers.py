@@ -139,3 +139,6 @@ class UpdateAdderessSerializer(serializers.Serializer):
         instance.pin_code = validated_data.get("pin_code", instance.pin_code)
         instance.save()
         return instance
+
+class GetNewCodeViewSerializer(serializers.Serializer):
+    type = serializers.CharField()

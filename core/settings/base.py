@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     "common",
     "orders",
 ]
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+#CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/0"
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -100,6 +101,7 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "SORT_OPERATIONS": False,
 }
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",

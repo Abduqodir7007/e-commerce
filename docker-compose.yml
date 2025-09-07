@@ -1,0 +1,29 @@
+services:
+    api:
+        container_name: e-commerce-api
+        command: python manage.py runserver 0.0.0.0:8000
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: e-commerce-api:latest
+        ports:
+            - 8000:8000
+        volumes:
+            - .:/app
+    redis:
+        container_name: redis
+        image: redis
+        restart: always
+        volumes:
+            - redis-data:/data
+    celery:
+        container_name: celery
+        image: e-commerce-api:latest
+        command: celery -A core worker --loglevel=info
+        volumes:
+            - .:/app
+        depends_on:
+            - redis
+            - api
+volumes:
+    redis-data:

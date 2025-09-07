@@ -112,10 +112,14 @@ class GetNewCodeView(APIView):
     authentication_class = [
         IsAuthenticated,
     ]
+    serializer_class = GetNewCodeViewSerializer
 
     def post(self, request):
         user = request.user
-        verify_type = request.data.get("type")
+        serializers = GetNewCodeViewSerializer(data=request.data)
+        serializers.is_valid(raise_exception=True)
+
+        verify_type = serializers.validated_data.get("type")  # type: ignore
         self.check_code_exists(user, verify_type)
         code = user.create_code()
 
